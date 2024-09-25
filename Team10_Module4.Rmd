@@ -1,0 +1,29 @@
+---
+title: "Team10_Module4"
+author: "Masen Palmerino and Helena Ebeling"
+date: "2024-09-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+
+## Methods
+
+
+## Results
+
+
+## Discussion
+
+
+## Author Contributions
+
+
+## References
+
+

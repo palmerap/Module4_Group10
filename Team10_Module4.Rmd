@@ -1,8 +1,9 @@
 ---
-title: "Team10_Module4"
+title: "Analysis of Hind-limb Length of Anoles"
 author: "Masen Palmerino and Helena Ebeling"
 date: "2024-09-25"
 output: html_document
+bibliography: BIOL3140.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -18,10 +19,14 @@ library(knitr) #for knitting options
 ```
 
 ## Introduction
+The purpose of this project is to assess morphological and allometric differences between ecomorphs in the Anolis genus. An ecomorph is a group of species that share an ecological niche and behavior within this niche. They do not necessarily share a common ancestor. We are attempting to visualize how hind limb length varies with size, how the hind limb length and size covary with ecological niche, evaluate the hindlimb-size relationship with and without a phylogenetic context, and assess the fit of phylogenetically corrected models of hind-limb variation under different modes of character evolution. 
 
-
+The morphological and ecological data were retrieved from a recent study of allometry and ecomorphology of anoles by @hagey2017there.
+<center>
+!["Anole Dewlap Display" by TexasEagle is licensed under CC BY-NC 2.0.](https://live.staticflickr.com/7073/7196035224_0ed5c15509_b.jpg)
+</center>
 ## Methods
-
+We assessed these questions using modeling, including use of standard frequentist models and an information theory approach. We plan to assess the fit of the models to determine the best fit for the relationships. We specifically used AIC tables and residuals to assess these models and analyze the relationships and covariates between various morphological differences between ecomorphs. The AIC models were also used to phylogenetically correct hindlimb residuals versus anole ecomorph. These corrections were used to make the residual boxplot. The phylogenetic tree data comes from a study of the phylogenetic relationships of anoles by @poe2017phylogenetic.
 
 ## Results
 ```{r, "load the data", include = FALSE}
@@ -53,6 +58,7 @@ pgls.OU1 <- gls(HTotal ~SVL, correlation = corMartins(0,phy = anole.tree,form=~S
 #PGLS under OU, w, ecomorph
 pgls.OU2 <- gls(HTotal ~SVL * Ecomorph2, correlation = corMartins(0,phy = anole.tree,form=~Species),data = anole.log, method = "ML")
 ```
+The results present varying AICc values for each of the models to phylogenetically correct hindlimb residuals versus anole ecomorph. The best fit is shown by the BM2 least squares model with the lowest AIC value is (-92.98…) and the highest AIC weight (0.98…). 
 ```{r, "AIC", echo = FALSE}
 #AIC operations
 anole.phylo.aic <- AICc(pgls.BM1,pgls.BM2,pgls.OU1,pgls.OU2)
@@ -65,6 +71,20 @@ knitr::kable(anole.phylow.aicw, caption = "Table displaying the AIC scores of ea
 anole.log <- anole.log%>%
   mutate(phylo.res=residuals(pgls.BM2))
 ```
+We produced a linear regression model that assessed the impact of ecomorph on hindlimb length.
+```{r, "regression plot", echo=FALSE}
+#create a regression plot
+ggplot(data = anole.log, mapping = aes(x= HTotal, y = SVL, color = Ecomorph2))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  labs(caption = "Linear regression model of HTotal vs SVL with different Ecomorphs distinguished by color")
+
+```
+
+To assess the validity of the findings from the linear regression model we corrected for similar phylogeny in the next model. 
+
+We also produced a box plot of phylogenetically corrected hindlimb residuals versus anole ecomorph. It provides the model deviations (residuals) for each ecomorph and also provides the mean and median residual for each ecomorph. The median and mean residuals centered around zero for most of the ecomorphs. 
+
 ```{r, "plot residuals", fig.cap="Boxplot of phylogenetically corrected hindlimb residuals versus anole ecomorph", echo=FALSE}
 #plot residuals
 p.eco.phylo <- anole.log%>%
@@ -75,10 +95,14 @@ print(p.eco.phylo)
 ```
 
 ## Discussion
-
+The linear regression plot shows that we must consider ecomorphs as having an impact on hindlimb length. The AIC demonstrate that the BM2 least squares model is the best fit for correcting the linear model to account for phylogeny. The residual boxplot showed that when the data is corrected phylogenetically, ecomorph does not have as strong of an impact on hind limb length. This is shown by analyzing the mean and median residuals for each ecomorph as well as the other model traits like the IQR size and overall pattern. The IQRs were also mostly similar across ecomorphs except for the trunk-crown ecomorph.
 
 ## Author Contributions
+Helena Ebeling wrote the introduction, methods, discussion, author contributions and the results description.
 
+Masen Palmerino wrote the code for the results as well as the references
+
+Both authors collaborated on each part of the project and edited where needed. 
 
 ## References
 
